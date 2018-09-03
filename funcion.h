@@ -154,14 +154,16 @@ void calculadora_horoscopo(unsigned d, unsigned m){
  void horoscopo_semana(int a){
   system("clear");
     /******************conexion**********************/
-	MYSQL *conn; /* variable de conexión para MySQL */
+	MYSQL *conn,mysql; /* variable de conexión para MySQL */
 	MYSQL_RES *res; /* variable que contendra el resultado de la consuta */
 	MYSQL_ROW row; /* variable que contendra los campos por cada registro consultado */
 	char *server = "127.0.0.1"; /*direccion del servidor 127.0.0.1, localhost o direccion ip */
 	char *user = "root"; /*usuario para consultar la base de datos */
 	char *password = ""; /* contraseña para el usuario en cuestion */
 	char *database = "horoscopo"; /*nombre de la base de datos a consultar */
-	conn = mysql_init(NULL); /*inicializacion a nula la conexión */
+	conn = mysql_init(&mysql); /*inicializacion a nula la conexión */
+  	mysql_options(&mysql, MYSQL_SET_CHARSET_NAME, "utf8");
+	mysql_options(&mysql, MYSQL_INIT_COMMAND, "SET NAMES utf8");
 
 	/* conectar a la base de datos */
 	if (!mysql_real_connect(conn, server, user, password, database, 0, NULL, 0))
@@ -484,19 +486,21 @@ case 7:
 
 void compatibilidad_horoscopo(int pedido){
 
-
+setlocale(LC_ALL,"spanish");
   /******************conexion**********************/
-	MYSQL *conn; /* variable de conexión para MySQL */
+	MYSQL *conn,mysql; /* variable de conexión para MySQL */
 	MYSQL_RES *res; /* variable que contendra el resultado de la consuta */
 	MYSQL_ROW row; /* variable que contendra los campos por cada registro consultado */
 	char *server = "127.0.0.1"; /*direccion del servidor 127.0.0.1, localhost o direccion ip */
 	char *user = "root"; /*usuario para consultar la base de datos */
 	char *password = ""; /* contraseña para el usuario en cuestion */
 	char *database = "horoscopo"; /*nombre de la base de datos a consultar */
-	conn = mysql_init(NULL); /*inicializacion a nula la conexión */
+	conn = mysql_init(&mysql); /*inicializacion a nula la conexión */
+	mysql_options(&mysql, MYSQL_SET_CHARSET_NAME, "utf8");
+	mysql_options(&mysql, MYSQL_INIT_COMMAND, "SET NAMES utf8");
 
 	/* conectar a la base de datos */
-	if (!mysql_real_connect(conn, server, user, password, database, 0, NULL, 0))
+	if (!mysql_real_connect(&mysql, server, user, password, database, 0, NULL, 0))
 	{ /* definir los parámetros de la conexión antes establecidos */
 		fprintf(stderr, "%s\n", mysql_error(conn)); /* si hay un error definir cual fue dicho error */
 		exit(1);
@@ -506,22 +510,23 @@ void compatibilidad_horoscopo(int pedido){
 
 
 
-//	if (mysql_query(conn, "select saludo from presentacion where id=1"))
-//	{ /* definicion de la consulta y el origen de la conexion */
-//		fprintf(stderr, "%s\n", mysql_error(conn));
-//		exit(1);
-//	}
+	if (mysql_query(conn, "select saludo from presentacion where id=1"))
+	{ /* definicion de la consulta y el origen de la conexion */
+		fprintf(stderr, "%s\n", mysql_error(conn));
+		exit(1);
+	}
 
-//	  res=mysql_use_result(conn);
+	  res=mysql_use_result(conn);
      
-  //  if((row=mysql_fetch_row(res))!=NULL){
-    //      printf("Presentacion:%s\t\n ",row[0]);
+    if((row=mysql_fetch_row(res))!=NULL){
+          printf("Presentacion:%s\t\n ",row[0]);
           
            
-  //  }
-   // mysql_free_result(res);
-//	mysql_close(conn);
+    }
+    mysql_free_result(res);
+	//mysql_close(conn);
 	
+	//hola
 
 	int respt;
 	int a=pedido;
